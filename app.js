@@ -31,18 +31,19 @@ const item3 = new Item({
 
 const defaultItems = [item1, item2, item3];
 
-Item.insertMany(defaultItems)
-  .then(() => {
-    console.log("default items added Successfully");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+// Item.insertMany(defaultItems)
+//   .then(() => {
+//     console.log("default items added Successfully");
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
 
-app.get("/", function (req, res) {
+app.get("/", async function (req, res) {
   //1. let day = getDate();
   let day = date.getDay();
-  res.render("list", { listTitle: day, newListItems: items });
+  let arr = await Item.find();
+  res.render("list", { listTitle: day, newListItems: arr });
 });
 
 app.post("/", function (req, res) {
