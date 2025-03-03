@@ -60,7 +60,14 @@ app.post("/", function (req, res) {
 });
 
 app.post("/delete", function (req, res) {
-  console.log(req.body.value);
+  Item.findByIdAndDelete(req.body.checkbox)
+    .then(() => {
+      console.log("Item deleted Successfully");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  res.redirect("/");
 });
 
 app.get("/work", function (req, res) {
