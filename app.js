@@ -70,14 +70,30 @@ app.post("/", function (req, res) {
 });
 
 app.post("/delete", function (req, res) {
-  Item.findByIdAndDelete(req.body.checkbox)
-    .then(() => {
-      console.log("Item deleted Successfully");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-  res.redirect("/");
+  const checkedItemId = req.body.checkbox;
+  const listName = req.body.listName;
+
+  if (listName === "Today") {
+    Item.findByIdAndDelete(checkedItemId)
+      .then(() => {
+        console.log("Item deleted Successfully");
+        res.redirect("/");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
+    List.findOneAndUpdate(
+      { name: listName },
+      { $pull: { items: { _id: checkedItemId } } }
+    )
+      .then(() => {
+        res.redirect("/" + listName);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 });
 
 const listSchema = {
