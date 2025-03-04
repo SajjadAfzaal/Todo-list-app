@@ -70,12 +70,44 @@ app.post("/delete", function (req, res) {
   res.redirect("/");
 });
 
-app.get("/work", function (req, res) {
-  res.render("list", { listTitle: "Work List", newListItems: workItems });
-});
+const listSchema = {
+  name: String,
+  items: [itemSchema],
+};
 
-app.get("/about", function (req, res) {
-  res.render("about");
+const List = mongoose.model("List", listSchema);
+
+app.get("/:customListName", async function (req, res) {
+  const customName = req.params.customListName;
+
+  try {
+    let foundList = await List.findOne({ name: customName });
+
+    if (foundList) {
+      console.log("Found Successfully:", foundList);
+      res.render("list", {
+        listTitle: foundList.name,
+        newListItems: foundList.items,
+      }); // Send found list to client
+      return;
+    }
+
+    // If no list exists, create and save a new one
+    let newList = new List({
+      name: customName,
+      items: defaultItems,
+    });
+
+    let savedList = await newList.save();
+    console.log("New List Created:", savedList);
+    res.render("list", {
+      listTitle: savedList.name,
+      newListItems: savedList.items,
+    }); // Send new list to client
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).send("Server Error"); // Send error response
+  }
 });
 
 app.listen(3000, function () {
