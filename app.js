@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const _ = require("lodash");
 const date = require(__dirname + "/date.js");
 
 const app = express();
@@ -110,7 +111,7 @@ const listSchema = {
 const List = mongoose.model("List", listSchema);
 
 app.get("/:customListName", async function (req, res) {
-  const customName = req.params.customListName;
+  const customName = _.capitalize(req.params.customListName);
 
   try {
     let foundList = await List.findOne({ name: customName });
