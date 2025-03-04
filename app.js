@@ -110,7 +110,7 @@ app.get("/:customListName", async function (req, res) {
     let foundList = await List.findOne({ name: customName });
 
     if (foundList) {
-      console.log("Found Successfully:", foundList);
+      console.log("Found Successfully");
       res.render("list", {
         listTitle: foundList.name,
         newListItems: foundList.items,
@@ -125,7 +125,7 @@ app.get("/:customListName", async function (req, res) {
     });
 
     let savedList = await newList.save();
-    console.log("New List Created:", savedList);
+    console.log("New List Created");
     res.render("list", {
       listTitle: savedList.name,
       newListItems: savedList.items,
