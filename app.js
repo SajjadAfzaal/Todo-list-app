@@ -69,30 +69,36 @@ app.post("/", function (req, res) {
   }
 });
 
-app.post("/delete", function (req, res) {
-  const checkedItemId = req.body.checkbox;
-  const listName = req.body.listName;
+app.post("/delete", async (req, res) => {
+  try {
+    const checkedItemId = req.body.checkbox;
+    const listName = req.body.listName;
 
-  if (listName === "Today") {
-    Item.findByIdAndDelete(checkedItemId)
-      .then(() => {
-        console.log("Item deleted Successfully");
-        res.redirect("/");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  } else {
-    List.findOneAndUpdate(
-      { name: listName },
-      { $pull: { items: { _id: checkedItemId } } }
-    )
-      .then(() => {
-        res.redirect("/" + listName);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (!checkedItemId || !listName) {
+      return res
+        .status(400)
+        .send("Invalid request: Missing item ID or list name");
+    }
+
+    if (listName === "Today") {
+      await Item.findByIdAndDelete(checkedItemId);
+      console.log("Item deleted successfully");
+      res.redirect("/");
+    } else {
+      const updatedList = await List.findOneAndUpdate(
+        { name: listName },
+        { $pull: { items: { _id: checkedItemId } } }
+      );
+
+      if (!updatedList) {
+        return res.status(404).send("List not found");
+      }
+
+      res.redirect("/" + listName);
+    }
+  } catch (err) {
+    console.error("Error deleting item:", err);
+    res.status(500).send("Internal Server Error");
   }
 });
 
