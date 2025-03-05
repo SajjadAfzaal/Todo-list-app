@@ -5,7 +5,9 @@ const _ = require("lodash");
 const date = require(__dirname + "/date.js");
 
 const app = express();
-mongoose.connect("mongodb://127.0.0.1:27017/todolistDB");
+mongoose.connect(
+  "mongodb+srv://sajjadafzaal13416:Test-123@cluster0.zj5q8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0/todolistDB"
+);
 
 // setting the ejs as a viewing engine
 app.set("view engine", "ejs");
