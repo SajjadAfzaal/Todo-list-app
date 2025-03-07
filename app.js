@@ -85,7 +85,7 @@ app.post("/delete", async (req, res) => {
 
     if (listName === "Today") {
       await Item.findByIdAndDelete(checkedItemId);
-      console.log("Item deleted successfully");
+      //console.log("Item deleted successfully");
       res.redirect("/");
     } else {
       const updatedList = await List.findOneAndUpdate(
@@ -119,7 +119,7 @@ app.get("/:customListName", async function (req, res) {
     let foundList = await List.findOne({ name: customName });
 
     if (foundList) {
-      console.log("Found Successfully");
+      //console.log("Found Successfully");
       res.render("list", {
         listTitle: foundList.name,
         newListItems: foundList.items,
@@ -134,7 +134,7 @@ app.get("/:customListName", async function (req, res) {
     });
 
     let savedList = await newList.save();
-    console.log("New List Created");
+    //console.log("New List Created");
     res.render("list", {
       listTitle: savedList.name,
       newListItems: savedList.items,
